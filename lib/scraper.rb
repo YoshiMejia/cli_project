@@ -50,8 +50,12 @@ class Scraper
     def brand_list(brand)
         search_brand(brand).each {|lipstick| Lipstick.new(lipstick[:brand], lipstick[:info], lipstick[:price])}.map do |item|
         puts "==============================="
-        puts "Brand: #{item[:brand]}"
-        puts "Price: #{item[:price]}"
+        puts "Brand: #{item[:brand].capitalize}"
+            if item[:price] == "$0.00" 
+                puts "Price: Unlisted"
+            else
+            puts "Price: #{item[:price]}"
+            end
         puts "Description: #{item[:info]}"
         end
 
@@ -60,36 +64,15 @@ class Scraper
     def tag_list(tag)
         search_tags(tag).each {|lipstick| Lipstick.new(lipstick[:brand], lipstick[:info], lipstick[:price])}.map do |item|
             puts "==============================="
-            puts "Brand: #{item[:brand]}"
-            puts "Price: #{item[:price]}"
+            puts "Brand: #{item[:brand].capitalize}"
+                if item[:price] == "$0.00" 
+                    puts "Price: Unlisted"
+                else
+                puts "Price: #{item[:price]}"
+                end
             puts "Description: #{item[:info]}"
         end
     end
 
 
-
-    
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-newbie = Scraper.new 
-# newbie.get_lipstick ------JSON METHOD
-    #binding.pry
-"pls work"
-    
 end#class ender

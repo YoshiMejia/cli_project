@@ -3,10 +3,8 @@ require 'pry'
 
 require_relative '../environment.rb'
 
-# newbie = Scraper.new 
-# lippy = Lipstick.new("a", "b", "c")
-# cli = Cli.new
-#  cli.start
-#newbie.search_tags("canadian")
 
-# binding.pry
+cli = Cli.new
+ cli.start
+
+

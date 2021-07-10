@@ -146,7 +146,11 @@ def long_list_warning
             self.get_lipstick[26..-1].map do |item|
                 # binding.pry
                 puts "Brand: #{item[:brand].capitalize}"
-                puts "Price: #{item[:price]}"
+                    if item[:price] == "$0.00" 
+                        puts "Price: Unlisted"
+                    else
+                    puts "Price: #{item[:price]}"
+                    end
                 puts "Description: #{item[:info]}"
                 puts "==============================="
                 end#map ender
@@ -190,7 +194,11 @@ def all_lipsticks
     self.get_lipstick[1..25].map do |item|
         # binding.pry
         puts "Brand: #{item[:brand].capitalize}"
-        puts "Price: #{item[:price]}"
+            if item[:price] == "$0.00" 
+                puts "Price: Unlisted"
+            else
+            puts "Price: #{item[:price]}"
+            end
         puts "Description: #{item[:info]}"
         puts "===================================="
     end

@@ -11,6 +11,6 @@ require 'net/http'
 require 'open-uri'
 require 'json'
 require 'nokogiri'
-
-gem 'require_relative'
+require 'bundler'
+require 'require_relative'
 
