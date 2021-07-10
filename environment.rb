@@ -7,7 +7,6 @@ require_relative './lib/cli.rb'
  
 #require necessary gems
 require 'pry'
-require 'net/http'
 require 'open-uri'
 require 'json'
 require 'nokogiri'
