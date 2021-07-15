@@ -1,9 +1,7 @@
 require_relative './scraper.rb'
 
 class Cli < Scraper
-            #      1        2               3               4           5            6           7           8           9                   10
     @@tags = ["Canadian", "CertClean", "Chemical Free", "Vegan", "EWG Verified", "Organic", "Non-gmo", "Gluten Free", "Hypoallergenic", "Natural"]
-              #     1       2           3       4           5           6           7           8           9       10      11      12          13      14
     @@brands = ["almay", "benefit", "boosh", "clinique", "colourpop", "covergirl", "fenty", "glossier", "iman", "milani", "nyx", "pacifica", "revlon", "nudus"]
 
 
@@ -28,9 +26,10 @@ def display_brands
 end
 
 def start
+    Scraper.new_lipstick
     puts "Welcome to my program!"
     puts "Please select an option, by it's number, to proceed!"
-    index = self.main_menu # SHOWING MAIN MENU
+    index = self.main_menu
 end
 
 def main_menu
@@ -42,9 +41,7 @@ def main_menu
     input = gets.chomp #get input from user
     index = input_to_index(input) #convert input to index number to access @@tags
         if !index.between?(0,3)
-            puts "============================================"
-            puts "ERROR: Please enter a number from 1-3, only!"
-            puts "============================================"
+            self.error_message
             self.main_menu
         elsif index == 0
             self.tag_menu
@@ -53,31 +50,29 @@ def main_menu
             elsif index == 2
                 self.all_lipsticks
             else index == 3
-                puts "Goodbye!!!"
-                exit
+                self.farewell
         end
     index
 end
 
-
-def tag_re_prompt
+def re_prompt_message(type) 
     puts "=========================================="
     puts "How would you like to proceed?"
     puts "1. Back to the Main Menu!"
     puts "2. Ehhh get me outta here..."
-    puts "3. Can I see those Tag options again?"
+    puts "3. Can I see those #{type} options again?"
+end
+
+def tag_re_prompt
+    self.re_prompt_message("Tag")
     input = gets.chomp #get input from user
     index = input_to_index(input)
-
     if !index.between?(0,2)
-        puts "============================================"
-        puts "ERROR: Please choose a number from 1-3, only!"
-        puts "============================================"
+        self.error_message
     elsif index == 0
         self.main_menu
     elsif index == 1
-        puts "Goodbye!!!"
-        exit
+        self.farewell
     else index == 3
         self.tag_menu
     end #if ender
@@ -85,26 +80,20 @@ def tag_re_prompt
 end
 
 def brand_re_prompt
-    puts "=========================================="
-    puts "How would you like to proceed?"
-    puts "1. Back to the Main Menu!"
-    puts "2. Ehhh get me outta here..."
-    puts "3. Can I see those Brand options again?"
+  
+    self.re_prompt_message("Brand")
     input = gets.chomp #get input from user
     index = input_to_index(input)
 
     if !index.between?(0,2)
-        puts "============================================"
-        puts "ERROR: Please choose a number from 1-3, only!"
-        puts "============================================"
+        self.error_message
     elsif index == 0
         self.main_menu
     elsif index == 1
-        puts "Goodbye!!!"
-        exit
+        self.farewell
     else index == 3
         self.brand_menu
-    end #if ender
+    end 
     self.brand_re_prompt
 end
 
@@ -117,14 +106,11 @@ def basic_re_prompt
     index = input_to_index(input)
 
     if !index.between?(0,1)
-        puts "============================================"
-        puts "ERROR: Please choose either 1 or 2, only!"
-        puts "============================================"
+        self.error_message
     elsif index == 0
         self.main_menu
     else index == 1
-        puts "Goodbye!!!"
-        exit
+        self.farewell
     end
     self.basic_re_prompt
 end
@@ -139,27 +125,31 @@ def long_list_warning
     input = gets.chomp #get input from user
     index = input_to_index(input)
         if !index.between?(0,1)
-            puts "================================================="
-            puts "ERROR: Please enter either 1 or 2, only!"
-            puts "================================================="
+            self.error_message
         elsif index == 0
-            self.get_lipstick[26..-1].map do |item|
-                # binding.pry
-                puts "Brand: #{item[:brand].capitalize}"
-                    if item[:price] == "$0.00" 
+            Lipstick.all.map do |item|
+                
+                puts "Brand: #{item.brand_name.capitalize}"
+                    if item.price == "$0.00" 
                         puts "Price: Unlisted"
                     else
-                    puts "Price: #{item[:price]}"
+                    puts "Price: #{item.price}"
                     end
-                puts "Description: #{item[:info]}"
+                puts "Description: #{item.description}"
                 puts "==============================="
-                end#map ender
+                end
                 self.basic_re_prompt
             else index == 1
                 self.main_menu
-        end #if ender
+        end
         
 self.long_list_re_prompt
+end
+
+def farewell
+    puts "Goodbye!!!"
+        Lipstick.reset_all
+        exit
 end
 
 def long_list_re_prompt
@@ -170,20 +160,15 @@ def long_list_re_prompt
     puts "3. I'd like to see the rest of the list, please!"
     input = gets.chomp #get input from user
     index = input_to_index(input)
-
     if !index.between?(0,2)
-        puts "================================================="
-        puts "ERROR: Please enter a number between 1-3, only!"
-        puts "================================================="
+        self.error_message
     elsif index == 0
         self.main_menu
     elsif index == 1
-        puts "Goodbye!!!"
-        exit
+       self.farewell
     else index == 2
         self.long_list_warning
-        # end#map ender
-    end#elsif ender
+    end
     
     self.long_list_re_prompt
 end#method ender
@@ -191,56 +176,72 @@ end#method ender
 def all_lipsticks
     puts "Please enjoy the (shortened) list of Brands below! :)"
     puts "======================================================="
-    self.get_lipstick[1..25].map do |item|
-        # binding.pry
-        puts "Brand: #{item[:brand].capitalize}"
-            if item[:price] == "$0.00" 
+    Lipstick.all.map do |item|
+
+        puts "Brand: #{item.brand_name.capitalize}"
+            if item.price == "$0.00" 
                 puts "Price: Unlisted"
             else
-            puts "Price: #{item[:price]}"
+            puts "Price: #{item.price}"
             end
-        puts "Description: #{item[:info]}"
+        puts "Description: #{item.description}"
         puts "===================================="
     end
 
-    self.long_list_re_prompt #changed from self.re_prompt
+    self.long_list_re_prompt 
 end
 
 def brand_menu
     puts "Please select a number from the list of Brands below! :)"
     self.display_brands
-    input = gets.chomp #get input from user
-    index = input_to_index(input) #convert input to index number to access @@tags
-    brand = Cli.brands[index]
-    self.brand_list(brand) #view list of brands
-    if !index.between?(0,13) #check for valid input
-        puts "============================================"
-        puts "ERROR: Please enter a number from 1-14, only!"
-        puts "============================================"
+    input = gets.chomp 
+    index = input_to_index(input)
+    brand = Cli.brands[index] 
+    brands = Lipstick.search_brand(brand) 
+    output_lipsticks(brands) 
+    if !index.between?(0,13)
+        self.error_message
         self.brand_menu
     end
 self.brand_re_prompt
 end
 
+def error_message
+        puts "======================================================"
+        puts "ERROR: Please enter one of the numbers listed below!"
+        puts "======================================================"
+end
+
 def tag_menu
     puts "Please select a number from the list of Product Tags below! :)"
-    self.display_tags #VIEW TAG LIST ---------
+    self.display_tags 
         input = gets.chomp #get input from user
         index = input_to_index(input) #convert input to index number to access @@tags
         tag = Cli.tags[index]
-        #  self.search_tags(tag)
         self.tag_list(tag)
-        # binding.pry
         if !index.between?(0,9)
-            puts "============================================"
-            puts "ERROR: Please enter a number from 1-10, only!"
-            puts "============================================"
+            self.error_message
             self.tag_menu
         end
     self.tag_re_prompt
 end
 
-
+def output_lipsticks(lipsticks)
+    lipsticks.each do |i| 
+    puts "==============================="
+        puts "Brand: #{i.brand_name.capitalize}"
+            if i.price == "$0.00" 
+                puts "Price: Unlisted"
+            else
+            puts "Price: #{i.price}"
+            end
+        puts "Description: #{i.description.capitalize}"
+        end
     
+    end#output ender
     
 end#class ender
+
+
+
+
