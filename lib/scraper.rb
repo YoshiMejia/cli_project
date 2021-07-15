@@ -5,7 +5,7 @@ require 'nokogiri'
 
 class Scraper 
 
-    def self.get_lipstick 
+    def get_lipstick 
         lipstick_info = []
         lipsticks_url = "http://makeup-api.herokuapp.com/api/v1/products?product_type=lipstick"
         doc = Nokogiri::HTML(open(lipsticks_url))
@@ -39,52 +39,4 @@ class Scraper
         end
     
     
-        def search_brand(brand) 
-            get_lipstick.select {|item| item[:brand] == brand}
-        end
-    
-        def self.new_lipstick 
-            get_lipstick.each {|lipstick| Lipstick.new(lipstick[:brand], lipstick[:info], lipstick[:price])}
-        end
-    
-        def brand_list(brand)
-            find_brands = search_brand(brand) 
-             find_brands.each do |lip_hash|
-                Lipstick.all.select do |lippy_obj|
-                   if lip_hash[:brand] == lippy_obj.brand_name && lip_hash[:price] == lippy_obj.price
-                puts "==============================="
-                puts "Brand: #{lippy_obj.brand_name.capitalize}"
-                    if lippy_obj.price == "$0.00" 
-                    puts "Price: Unlisted"
-                    else
-                    puts "Price: #{lippy_obj.price}"
-                    end
-                    puts "Description: #{lippy_obj.description}"
-                    end
-
-                end
-            end
-        end
-    
-       
-        def tag_list(tag)           
-            find_tags = search_tags(tag) 
-             find_tags.each do |lip_hash|
-                Lipstick.all.select do |lippy_obj|
-                   if lip_hash[:brand] == lippy_obj.brand_name && lip_hash[:price] == lippy_obj.price
-                puts "==============================="
-                puts "Brand: #{lippy_obj.brand_name.capitalize}"
-                    if lippy_obj.price == "$0.00" 
-                        puts "Price: Unlisted"
-                    else
-                    puts "Price: #{lippy_obj.price}"
-                    end
-                        puts "Description: #{lippy_obj.description}"
-                    end
-                end
-            end
-        end
-    
-    
-    end#class ender
-
+    end #class ender

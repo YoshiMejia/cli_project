@@ -26,7 +26,7 @@ def display_brands
 end
 
 def start
-    Scraper.new_lipstick
+    new_lipstick
     puts "Welcome to my program!"
     puts "Please select an option, by it's number, to proceed!"
     index = self.main_menu
@@ -240,8 +240,50 @@ def output_lipsticks(lipsticks)
     
     end#output ender
     
-end#class ender
+        def search_brand(brand) 
+            get_lipstick.select {|item| item[:brand] == brand}
+        end
+    
+        def new_lipstick 
+            get_lipstick.each {|lipstick| Lipstick.new(lipstick[:brand], lipstick[:info], lipstick[:price])}
+        end
+    
+        def brand_list(brand)
+            find_brands = search_brand(brand) 
+             find_brands.each do |lip_hash|
+                Lipstick.all.select do |lippy_obj|
+                   if lip_hash[:brand] == lippy_obj.brand_name && lip_hash[:price] == lippy_obj.price
+                puts "==============================="
+                puts "Brand: #{lippy_obj.brand_name.capitalize}"
+                    if lippy_obj.price == "$0.00" 
+                    puts "Price: Unlisted"
+                    else
+                    puts "Price: #{lippy_obj.price}"
+                    end
+                    puts "Description: #{lippy_obj.description}"
+                    end
 
-
-
-
+                end
+            end
+        end
+    
+       
+        def tag_list(tag)           
+            find_tags = search_tags(tag) 
+             find_tags.each do |lip_hash|
+                Lipstick.all.select do |lippy_obj|
+                   if lip_hash[:brand] == lippy_obj.brand_name && lip_hash[:price] == lippy_obj.price
+                puts "==============================="
+                puts "Brand: #{lippy_obj.brand_name.capitalize}"
+                    if lippy_obj.price == "$0.00" 
+                        puts "Price: Unlisted"
+                    else
+                    puts "Price: #{lippy_obj.price}"
+                    end
+                        puts "Description: #{lippy_obj.description}"
+                    end
+                end
+            end
+        end
+    
+    end #class ender
