@@ -1,9 +1,7 @@
 
 
-require_relative './scraper.rb'
 
-
-class Lipstick < Scraper
+class Lipstick 
 
 
     attr_accessor :brand_name, :price, :description
